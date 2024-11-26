@@ -26,10 +26,13 @@ This module also provides some data items to the user:
 Modifications to original from cpython 3.12 source:
 - Reverted to use of onerror= instead of onexc= parameter in calls
   to shutil.rmtree
+- Reverted onerror handler to 3.11 implementation instead of
+  function os.path.is_junction added in Python 3.12
 - Added an implementation of the io.text_encoding function added
   in Python 3.10
 - Added Python 3.8 compatible alternative for types.GenericAlias
   class added in Python 3.9
+- Added # type: ignore comments
 """
 
 __all__ = [
@@ -50,6 +53,7 @@ import warnings as _warnings
 import io as _io
 import os as _os
 import shutil as _shutil
+import stat as _stat
 import errno as _errno
 from random import Random as _Random
 import sys as _sys
@@ -57,7 +61,7 @@ if _sys.version_info >= (3, 9):
     from types import GenericAlias as _GenericAlias
 else:
     from typing import List as _List
-    _GenericAlias = type(_List[int])
+    _GenericAlias = type(_List[int]) # type: ignore
 import weakref as _weakref
 import _thread
 _allocate_lock = _thread.allocate_lock
@@ -620,7 +624,7 @@ def NamedTemporaryFile(mode='w+b', buffering=-1, encoding=None,
 if _os.name != 'posix' or _sys.platform == 'cygwin':
     # On non-POSIX and Cygwin systems, assume that we cannot unlink a file
     # while it is open.
-    TemporaryFile = NamedTemporaryFile
+    TemporaryFile = NamedTemporaryFile # type: ignore
 
 else:
     # Is the O_TMPFILE flag available and does it work?
@@ -628,7 +632,7 @@ else:
     # IsADirectoryError exception
     _O_TMPFILE_WORKS = hasattr(_os, 'O_TMPFILE')
 
-    def TemporaryFile(mode='w+b', buffering=-1, encoding=None,
+    def TemporaryFile(mode='w+b', buffering=-1, encoding=None, # type: ignore
                       newline=None, suffix=None, prefix=None,
                       dir=None, *, errors=None):
         """Create and return a temporary file.
@@ -935,7 +939,18 @@ class TemporaryDirectory:
                         # raise NotADirectoryError and mask the PermissionError.
                         # So we must re-raise the current PermissionError if
                         # path is not a directory.
-                        if not _os.path.isdir(path) or _os.path.isjunction(path):
+                        try:
+                            st = _os.lstat(path)
+                        except OSError:
+                            if ignore_errors:
+                                return
+                            raise
+                        if (_stat.S_ISLNK(st.st_mode) or
+                            not _stat.S_ISDIR(st.st_mode) or
+                            (hasattr(st, 'st_file_attributes') and
+                             st.st_file_attributes & _stat.FILE_ATTRIBUTE_REPARSE_POINT and
+                             st.st_reparse_tag == _stat.IO_REPARSE_TAG_MOUNT_POINT)
+                        ):
                             if ignore_errors:
                                 return
                             raise

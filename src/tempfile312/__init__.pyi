@@ -210,10 +210,10 @@ reproduced below.
 """
 
 import io
+from os import PathLike
 import sys
 from _typeshed import (
     BytesPath,
-    GenericPath,
     OpenBinaryMode,
     OpenBinaryModeReading,
     OpenBinaryModeUpdating,
@@ -230,6 +230,8 @@ from typing_extensions import Self
 
 if sys.version_info >= (3, 9):
     from types import GenericAlias
+
+GenericPath = AnyStr | PathLike[AnyStr]
 
 __all__ = [
     "NamedTemporaryFile",
