@@ -8,17 +8,23 @@ version = "1.0.0"
 authors = [
     {name = "Albert Zhang", email = "bert@alchzh.me"}
 ]
-description = "My package description"
+description = "Backport of Python 3.12's tempfile library for Python 3.8+"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: Python Software Foundation License"
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Python Software Foundation License",
 ]
+keywords = ["tempfile", "backport"]
 
 [project.urls]
-Homepage = "https://github.com/alchzh/tempfile312"
-Source = "https://github.com/alchzh/tempfile312"
+Homepage = "https://github.com/rbs-forks/tempfile312"
+Source = "https://github.com/rbs-forks/tempfile312"
 Documentation = "https://docs.python.org/3.12/library/tempfile.html"
 
 [tool.setuptools]
