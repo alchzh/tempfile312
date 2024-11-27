@@ -219,7 +219,7 @@ _can_xattr = None
 
 
 def can_xattr():
-    import tempfile
+    import tempfile312 as tempfile
     global _can_xattr
     if _can_xattr is not None:
         return _can_xattr
@@ -481,7 +481,7 @@ def temp_dir(path=None, quiet=False):
         created, only a warning is issued.
 
     """
-    import tempfile
+    import tempfile312 as tempfile
     dir_created = False
     if path is None:
         path = tempfile.mkdtemp()
@@ -579,7 +579,7 @@ def open_dir_fd(path):
 def fs_is_case_insensitive(directory):
     """Detects if the file system for the specified directory
     is case-insensitive."""
-    import tempfile
+    import tempfile312 as tempfile
     with tempfile.NamedTemporaryFile(dir=directory) as base:
         base_path = base.name
         case_path = base_path.upper()
