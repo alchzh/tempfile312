@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "tempfile312"
 version = "1.0.0"
 authors = [
-    {name = "Albert Zhang", email = "bert@alchzh.me"}
+    {name = "Red Balloon Security", email = "ofrak@redballoonsecurity.com"}
 ]
 description = "Backport of Python 3.12's tempfile library for Python 3.8+"
 readme = "README.md"
